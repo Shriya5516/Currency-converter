@@ -1,60 +1,53 @@
-
-  const BASE_URL =
-  "https://latest.currency-api.pages.dev/v1/currencies/eur.json";
+const BASE_URL =
+"https://v6.exchangerate-api.com/v6/74a0ff46cf67b62cc7627e28/latest/";
 
 const dropdowns = document.querySelectorAll(".dropdown select");
-const btn = document.querySelector("form button");
-const fromCurr = document.querySelector(".from select");
-const toCurr = document.querySelector(".to select");
-const msg = document.querySelector(".msg");
+const btn = document.getElementById("convertBtn");
+const fromCurr = document.getElementById("fromCurrency");
+const toCurr = document.getElementById("toCurrency");
+const msg = document.getElementById("exchangeMsg");
 
 for (let select of dropdowns) {
-  for (currCode in countryList) {
-    let newOption = document.createElement("option");
-    newOption.innerText = currCode;
-    newOption.value = currCode;
-    if (select.name === "from" && currCode === "USD") {
-      newOption.selected = "selected";
-    } else if (select.name === "to" && currCode === "INR") {
-      newOption.selected = "selected";
+  for (let currCode in countryList) {
+    let option = document.createElement("option");
+    option.value = currCode;
+    option.innerText = currCode;
+
+    if (select.id === "fromCurrency" && currCode === "USD") {
+      option.selected = true;
     }
-    select.append(newOption);
+    if (select.id === "toCurrency" && currCode === "INR") {
+      option.selected = true;
+    }
+    select.append(option);
   }
 
-  select.addEventListener("change", (evt) => {
-    updateFlag(evt.target);
+  select.addEventListener("change", (e) => {
+    updateFlag(e.target);
   });
 }
 
-const updateExchangeRate = async () => {
-  let amount = document.querySelector(".amount input");
-  let amtVal = amount.value;
-  if (amtVal === "" || amtVal < 1) {
-    amtVal = 1;
-    amount.value = "1";
-  }
-  const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toLowerCase()}.json`;
-  let response = await fetch(URL);
-  let data = await response.json();
-  let rate = data[toCurr.value.toLowerCase()];
+async function updateExchangeRate() {
+  let amount = document.getElementById("amount").value;
+  if (amount <= 0) amount = 1;
 
-  let finalAmount = amtVal * rate;
-  msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
-};
+  const res = await fetch(`${BASE_URL}${fromCurr.value}`);
+  const data = await res.json();
 
-const updateFlag = (element) => {
-  let currCode = element.value;
-  let countryCode = countryList[currCode];
-  let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
+  const rate = data.conversion_rates[toCurr.value];
+  const finalAmount = (amount * rate).toFixed(2);
+
+  msg.innerText = `${amount} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+}
+
+function updateFlag(element) {
+  let countryCode = countryList[element.value];
   let img = element.parentElement.querySelector("img");
-  img.src = newSrc;
-};
+  img.src = `https://flagsapi.com/${countryCode}/flat/64.png`;
+}
 
-btn.addEventListener("click", (evt) => {
-  evt.preventDefault();
-  updateExchangeRate();
-});
+btn.addEventListener("click", updateExchangeRate);
+window.addEventListener("load", updateExchangeRate);
 
-window.addEventListener("load", () => {
-  updateExchangeRate();
-});
+ 
+
