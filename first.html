@@ -14,16 +14,15 @@
     <form>
         <div class="amount">
             <p>Enter Amount</p>
-            <input value = "100" type="text">
+            <input id="amount" value="100" type="number">
+
         </div>
         <div class="dropdown">
             <div class="from">
                 <p>From</p>
                 <div class="select-container">
                     <img src="https://flagsapi.com/US/flat/64.png">
-                    <select name ="from">
-                        
-                    </select>
+                    <select id="fromCurrency" name="from"></select>
                 </div>
                 </div>
                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
@@ -33,12 +32,14 @@
                <p>To</p>
             <div class="select-container">
                     <img src="https://flagsapi.com/IN/flat/64.png">
-                    <select name ="to"></select>
+                    <select id="toCurrency" name="to"></select>
                 </div>
         </div>
         </div>
-        <div class="msg">1USD = 80INR</div>
-        <button>Get Exchange Rate </button>
+        <div class="msg" id="exchangeMsg"></div>
+
+        <button type="button" id="convertBtn">Get Exchange Rate</button>
+
     </form>
    </div>
    <script src="code.js"></script>
